@@ -2,10 +2,13 @@ import json
 import os
 import time
 import random
-import undetected_chromedriver as uc
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import json
+import os
+import time
+import random
+
+# Imports do Selenium movidos para escopo local para evitar erro 'distutils' no Python 3.12+
+# e para permitir execução leve no GitHub Actions sem instalar Chrome.
 
 def get_mock_products():
     """Retorna produtos de exemplo para fallback."""
@@ -67,6 +70,12 @@ def scan_shopee_products(limit=50):
     """
     Busca produtos populares na Shopee Brasil usando Selenium (undetected-chromedriver).
     """
+    # Importação atrasada (lazy) para evitar crash no CI se faltar dependências
+    import undetected_chromedriver as uc
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+
     print("[*] Iniciando Chrome Driver (Headless)...", flush=True)
     
     # Configurar opções do Chrome
