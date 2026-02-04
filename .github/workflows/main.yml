@@ -1,0 +1,51 @@
+name: Shopee Scanner Daily
+
+on:
+  # Permite rodar manualmente na aba Actions
+  workflow_dispatch:
+  # Roda todo dia as 08:00 UTC (opcional, remova se quiser só manual)
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  run-scanner:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install Google Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+
+    - name: Install Dependencies
+      run: |
+        pip install requests selenium undetected-chromedriver googlesearch-python
+
+    - name: Run Shopee Scanner
+      # O script já está forçado para headless, ideal para CI
+      run: python execution/shopee_scanner.py
+      continue-on-error: true # Continua para gerar vídeos mesmo se scanner falhar (usando mock)
+
+    - name: Find Marketing Videos
+      run: python execution/video_finder.py
+      continue-on-error: true
+
+    - name: Generate Report
+      run: python execution/report_generator.py
+
+    - name: Upload Report Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Relatorio-Shopee
+        path: |
+          relatorio_produtos.html
+          .tmp/*.json
+        retention-days: 5

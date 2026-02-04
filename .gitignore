@@ -1,0 +1,15 @@
+# Intermediate files
+.tmp/
+
+# Env variables
+.env
+
+# Google Credentials
+credentials.json
+token.json
+
+# Python
+__pycache__/
+*.pyc
+.tmp/
+relatorio_produtos.html
